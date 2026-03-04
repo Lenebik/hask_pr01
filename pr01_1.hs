@@ -29,6 +29,12 @@ mySND (_, a, _) = a
 myTHRD :: (a, b, c) -> c
 myTHRD (_, _, a) = a
 
+myHead :: [a] -> a
+myHead = (x:xs) = x
+
+myTail :: [a] -> [a]
+myTail = (x:xs) = xs
+
 {-
 
 Напишите реализацию функций myFST, mySND, myTHRD для кортежа (a,b,c)
