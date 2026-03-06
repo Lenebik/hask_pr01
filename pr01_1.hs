@@ -9,7 +9,6 @@ myZip [] xs = []
 myZip xs [] = []
 myZip (x:xs) (y:ys) = (x,y) : myZip xs ys
 
-
 myMap :: (a -> b) -> [a] -> [b]
 myMap _ [] = []
 myMap f (x : xs) = f x : myMap f xs 
@@ -30,11 +29,20 @@ myTHRD :: (a, b, c) -> c
 myTHRD (_, _, a) = a
 
 myHead :: [a] -> a
-myHead = (x:xs) = x
+myHead (x:xs) = x
 
 myTail :: [a] -> [a]
-myTail = (x:xs) = xs
+myTail (x:xs) = xs
 
+myTake :: Int -> [a] -> [a]
+myTake 0 _ = []
+myTake _ [] = []
+myTake n (x:xs) = x : myTake (n - 1) xs
+
+myDrop :: Int -> [a] -> [a]
+myDrop 0 xs = xs
+myDrop _ [] = []
+myDrop n (x :xs) = myDrop (n - 1) xs
 {-
 
 Напишите реализацию функций myFST, mySND, myTHRD для кортежа (a,b,c)
