@@ -9,6 +9,16 @@ myZip [] xs = []
 myZip xs [] = []
 myZip (x:xs) (y:ys) = (x,y) : myZip xs ys
 
+myZip3 :: [a] -> [b] -> [c] -> [(a, b, c)]
+myZip3 (x:xs) (y:ys) (z:zs) = (x, y, z) : myZip3 xs ys zs
+myZip3 _ _ _  = []
+
+myUnzip :: [(a, b)] -> ([a], [b])
+myUnzip [] = ([], [])
+myUnzip ((x, y) : xys) = (x : xs, y : ys)
+  where
+    (xs, ys) = myUnzip xys
+
 myMap :: (a -> b) -> [a] -> [b]
 myMap _ [] = []
 myMap f (x : xs) = f x : myMap f xs 
@@ -20,7 +30,6 @@ myZipWith f (x:xs) (y:ys) = f x y : myZipWith f xs ys
 
 myFST :: (a, b , c) -> a
 myFST (a, _, _) = a
-
 
 mySND :: (a, b, c) -> b
 mySND (_, a, _) = a
@@ -43,6 +52,11 @@ myDrop :: Int -> [a] -> [a]
 myDrop 0 xs = xs
 myDrop _ [] = []
 myDrop n (x :xs) = myDrop (n - 1) xs
+
+myProduct :: [Int] -> Int
+myProduct []  = 1
+myProduct (x:xs) = x * myProduct xs
+
 {-
 
 Напишите реализацию функций myFST, mySND, myTHRD для кортежа (a,b,c)
