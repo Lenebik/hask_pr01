@@ -28,6 +28,12 @@ myZipWith _ [] _ = []
 myZipWith _ _ [] = []
 myZipWith f (x:xs) (y:ys) = f x y : myZipWith f xs ys
 
+myZipWith3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+myZipWith3 _ [] _ _ = []
+myZipWith3 _ _ [] _ = []
+myZipWith3 _ _ _ [] = []
+myZipWith3 f (x:xs) (y:ys) (z:zs) = f x y z : myZipWith3 f xs ys zs
+
 myFST :: (a, b , c) -> a
 myFST (a, _, _) = a
 
@@ -56,6 +62,17 @@ myDrop n (x :xs) = myDrop (n - 1) xs
 myProduct :: [Int] -> Int
 myProduct []  = 1
 myProduct (x:xs) = x * myProduct xs
+
+myAll :: (a -> Bool) -> [a] -> Bool
+myAll _ [] = True
+myAll p (x:xs) = p x && myAll p xs
+
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny _ [] = False
+myAny p (x:xs) = p x || myAny p xs
+
+myComposition :: (b -> c) -> (a -> b) -> a -> c
+myComposition f g x = f (g x)
 
 {-
 
