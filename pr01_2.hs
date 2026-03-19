@@ -80,6 +80,108 @@ myMap :: (a -> b) -> MyList a -> MyList b
 myMap _ MyEmpty         = MyEmpty
 myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
 
+-- Расширьте типы для выпекания тортов из материалов лекции:
+    -- Добавить возможность испечь не менее трех типов тортов
+    -- Контроль числа и объема используемых ингредиентов
+    -- Обработку недостатка или отсутствия ингредиентов
+
+-- Типы описания составляющих:
+data IngredientsName = Oil | Chocolate | Vanilla | Carrot | Egg | Flour | Shugar | BakingPowder deriving Show
+
+data FillingMix = NotMix | SpoiledMix | OilChocolateMix | OilVanillaMix | OilCarrotMix deriving Show
+
+data Dough = NotDough | SpoiledDough | CakeDough deriving Show
+
+data CakeDoughType = NotCakeDough | SpoiledCakeDough | ChocolateCakeDough | VanillaCakeDough | CarrotCakeDough deriving Show
+
+data Cake = NotCake | SpoiledCake | ChocolateCake | VanillaCake | CarrotCake deriving Show
+
+data Action = Bake deriving Show
+
+-- Проверка количества ингредиентов
+checkAmount :: Int -> Int -> Bool
+checkAmount available needed = available >= needed
+
+-- Приготовление смеси для начинки
+makeCakeMix :: (IngredientsName, Int) -> (IngredientsName, Int) -> FillingMix
+makeCakeMix (Oil, x) (Chocolate, y) | checkAmount x 200 && checkAmount y 20 = OilChocolateMix
+makeCakeMix (Chocolate, x) (Oil, y) | checkAmount x 20 && checkAmount y 200 = OilChocolateMix
+makeCakeMix (Oil, x) (Vanilla, y)   | checkAmount x 200 && checkAmount y 15 = OilVanillaMix
+makeCakeMix (Vanilla, x) (Oil, y)   | checkAmount x 15 && checkAmount y 200 = OilVanillaMix
+makeCakeMix (Oil, x) (Carrot, y)    | checkAmount x 200 && checkAmount y 50 = OilCarrotMix
+makeCakeMix (Carrot, x) (Oil, y)    | checkAmount x 50 && checkAmount y 200 = OilCarrotMix
+makeCakeMix (Oil, x) (Oil, y)       = SpoiledMix
+makeCakeMix _ _                     = NotMix
+
+-- Приготовление теста
+cakeDough :: (IngredientsName, Int) -> (IngredientsName, Int) -> (IngredientsName, Int) -> (IngredientsName, Int) -> Dough
+cakeDough (Egg, e) (Flour, f) (Shugar, s) (BakingPowder, b) | checkAmount e 8 && checkAmount f 200 && checkAmount s 100 && checkAmount b 2 = CakeDough
+cakeDough (Oil, _) _ _ _ = SpoiledDough
+cakeDough _ _ _ _        = NotDough
+
+-- Создание типа теста для торта
+chocolateCakeDough :: Dough -> FillingMix -> CakeDoughType
+chocolateCakeDough SpoiledDough _ = SpoiledCakeDough
+chocolateCakeDough _ SpoiledMix   = SpoiledCakeDough
+chocolateCakeDough CakeDough OilChocolateMix = ChocolateCakeDough
+chocolateCakeDough _ _ = NotCakeDough
+
+vanillaCakeDough :: Dough -> FillingMix -> CakeDoughType
+vanillaCakeDough SpoiledDough _ = SpoiledCakeDough
+vanillaCakeDough _ SpoiledMix   = SpoiledCakeDough
+vanillaCakeDough CakeDough OilVanillaMix = VanillaCakeDough
+vanillaCakeDough _ _ = NotCakeDough
+
+carrotCakeDough :: Dough -> FillingMix -> CakeDoughType
+carrotCakeDough SpoiledDough _ = SpoiledCakeDough
+carrotCakeDough _ SpoiledMix   = SpoiledCakeDough
+carrotCakeDough CakeDough OilCarrotMix = CarrotCakeDough
+carrotCakeDough _ _ = NotCakeDough
+
+-- Выпекание торта
+chocolateCake :: CakeDoughType -> Action -> Cake
+chocolateCake SpoiledCakeDough _ = SpoiledCake
+chocolateCake ChocolateCakeDough Bake = ChocolateCake
+chocolateCake _ _ = NotCake
+
+vanillaCake :: CakeDoughType -> Action -> Cake
+vanillaCake SpoiledCakeDough _ = SpoiledCake
+vanillaCake VanillaCakeDough Bake = VanillaCake
+vanillaCake _ _ = NotCake
+
+carrotCake :: CakeDoughType -> Action -> Cake
+carrotCake SpoiledCakeDough _ = SpoiledCake
+carrotCake CarrotCakeDough Bake = CarrotCake
+carrotCake _ _ = NotCake
+
+-- Примеры успешного приготовления
+
+mixChoco = makeCakeMix (Oil, 200) (Chocolate, 20)
+doughChoco = cakeDough (Egg, 8) (Flour, 200) (Shugar, 100) (BakingPowder, 2)
+cakeDoughChoco = chocolateCakeDough doughChoco mixChoco
+cakeChoco = chocolateCake cakeDoughChoco Bake
+
+mixVanilla = makeCakeMix (Oil, 200) (Vanilla, 15)
+doughVanilla = cakeDough (Egg, 8) (Flour, 200) (Shugar, 100) (BakingPowder, 2)
+cakeDoughVanilla = vanillaCakeDough doughVanilla mixVanilla
+cakeVanilla = vanillaCake cakeDoughVanilla Bake
+
+mixCarrot = makeCakeMix (Oil, 200) (Carrot, 50)
+doughCarrot = cakeDough (Egg, 8) (Flour, 200) (Shugar, 100) (BakingPowder, 2)
+cakeDoughCarrot = carrotCakeDough doughCarrot mixCarrot
+cakeCarrot = carrotCake cakeDoughCarrot Bake
+
+-- Ошибки
+
+mixSpoil1 :: FillingMix
+mixSpoil1 = makeCakeMix (Oil, 50) (Chocolate, 20)  -- недостаточно масла
+
+mixNot1 = makeCakeMix (Egg, 8) (Chocolate, 20)  -- не те ингредиенты
+
+doughSpoil = cakeDough (Oil, 4) (Flour, 200) (Shugar, 100) (BakingPowder, 2)  -- масло вместо яиц
+
+cakeNotMatch = vanillaCake cakeDoughChoco Bake  -- несоответствие смеси и теста
+
 
 {-
 
