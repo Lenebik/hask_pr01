@@ -67,14 +67,18 @@ myMaybe :: b -> (a -> b) -> Maybe a -> b
 myMaybe deflt _ Nothing  = deflt
 myMaybe _ f (Just x) = f x
 
-
-
-{-
 -- myUnFoldr - развертка (операция обратная к свертке)
-MyUnfoldr :: (b -> (a, b)) -> b -> [a]
-MyUnfoldr f ini = let (x, ini') = f ini in
-    x: MyUnfoldr f ini'
--}
+myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+myUnfoldr f ini = helper (f ini) where
+    helper (Just (x,ini')) = x : myUnfoldr f ini'
+    helper Nothing           = []
+
+-- myMap - реализуйте функцию map с использованием типа MyList из материалов лекции
+data MyList a = MyEmpty | MyCons a (MyList a) deriving Show
+
+myMap :: (a -> b) -> MyList a -> MyList b
+myMap _ MyEmpty         = MyEmpty
+myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
 
 
 {-
