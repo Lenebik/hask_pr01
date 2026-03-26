@@ -111,12 +111,12 @@ makeCakeMix (Carrot x) (Oil y)    | x >= 50 && y >= 200 = OilCarrotMix
 makeCakeMix (Oil x) (Oil y)       | x >= 200 && y >= 200 = SpoiledMix
 makeCakeMix _ _                   = NotMix
 
-
 -- Приготовление теста
-cakeDough :: (IngredientsName, Int) -> (IngredientsName, Int) -> (IngredientsName, Int) -> (IngredientsName, Int) -> Dough
-cakeDough (Egg, e) (Flour, f) (Shugar, s) (BakingPowder, b) | checkAmount e 8 && checkAmount f 200 && checkAmount s 100 && checkAmount b 2 = CakeDough
-cakeDough (Oil, _) _ _ _ = SpoiledDough
-cakeDough _ _ _ _        = NotDough
+cakeDough :: Ingredient -> Ingredient -> Ingredient -> Ingredient -> Dough
+cakeDough (Egg e) (Flour f) (Shugar s) (BakingPowder b) 
+    | e >= 8 && f >= 200 && s >= 100 && b >= 2 = CakeDough
+cakeDough (Oil _) _ _ _ = SpoiledDough
+cakeDough _ _ _ _       = NotDough
 
 -- Создание типа теста для торта
 chocolateCakeDough :: Dough -> FillingMix -> CakeDoughType
