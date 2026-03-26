@@ -2,7 +2,7 @@
 -- Практические задание 1. Часть 2 --
 -------------------------------------
 
-module Pr01_2 where
+module Main where
 
 myFST :: (a, b , c) -> a
 myFST (a, _, _) = a
@@ -76,9 +76,9 @@ myUnfoldr f ini = helper (f ini) where
 -- myMap - реализуйте функцию map с использованием типа MyList из материалов лекции
 data MyList a = MyEmpty | MyCons a (MyList a) deriving Show
 
-myMap :: (a -> b) -> MyList a -> MyList b
-myMap _ MyEmpty         = MyEmpty
-myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
+-- myMap :: (a -> b) -> MyList a -> MyList b
+-- myMap _ MyEmpty         = MyEmpty
+-- myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
 
 -- Расширьте типы для выпекания тортов из материалов лекции:
     -- Добавить возможность испечь не менее трех типов тортов
@@ -86,11 +86,13 @@ myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
     -- Обработку недостатка или отсутствия ингредиентов
 
 -- Типы описания составляющих:
-data IngredientsName = Oil | Chocolate | Vanilla | Carrot | Egg | Flour | Shugar | BakingPowder deriving Show
+data Ingredient = Oil Int | Chocolate Int | Vanilla Int | Carrot Int | Egg Int | Flour Int | Shugar Int | BakingPowder Int deriving Show
 
 data FillingMix = NotMix | SpoiledMix | OilChocolateMix | OilVanillaMix | OilCarrotMix deriving Show
 
 data Dough = NotDough | SpoiledDough | CakeDough deriving Show
+
+data CakeDoughType = NotCakeDough  SpoiledCakeDough | ChocolateCakeDough | VanillaCakeDough | CarrotCakeDough deriving Show
 
 data CakeDoughType = NotCakeDough | SpoiledCakeDough | ChocolateCakeDough | VanillaCakeDough | CarrotCakeDough deriving Show
 
@@ -98,20 +100,17 @@ data Cake = NotCake | SpoiledCake | ChocolateCake | VanillaCake | CarrotCake der
 
 data Action = Bake deriving Show
 
--- Проверка количества ингредиентов
-checkAmount :: Int -> Int -> Bool
-checkAmount available needed = available >= needed
-
 -- Приготовление смеси для начинки
-makeCakeMix :: (IngredientsName, Int) -> (IngredientsName, Int) -> FillingMix
-makeCakeMix (Oil, x) (Chocolate, y) | checkAmount x 200 && checkAmount y 20 = OilChocolateMix
-makeCakeMix (Chocolate, x) (Oil, y) | checkAmount x 20 && checkAmount y 200 = OilChocolateMix
-makeCakeMix (Oil, x) (Vanilla, y)   | checkAmount x 200 && checkAmount y 15 = OilVanillaMix
-makeCakeMix (Vanilla, x) (Oil, y)   | checkAmount x 15 && checkAmount y 200 = OilVanillaMix
-makeCakeMix (Oil, x) (Carrot, y)    | checkAmount x 200 && checkAmount y 50 = OilCarrotMix
-makeCakeMix (Carrot, x) (Oil, y)    | checkAmount x 50 && checkAmount y 200 = OilCarrotMix
-makeCakeMix (Oil, x) (Oil, y)       = SpoiledMix
-makeCakeMix _ _                     = NotMix
+makeCakeMix :: Ingredient -> Ingredient -> FillingMix
+makeCakeMix (Oil x) (Chocolate y) | x >= 200 && y >= 20 = OilChocolateMix
+makeCakeMix (Chocolate x) (Oil y) | x >= 20 && y >= 200 = OilChocolateMix
+makeCakeMix (Oil x) (Vanilla y)   | x >= 200 && y >= 15 = OilVanillaMix
+makeCakeMix (Vanilla x) (Oil y)   | x >= 15 && y >= 200 = OilVanillaMix
+makeCakeMix (Oil x) (Carrot y)    | x >= 200 && y >= 50 = OilCarrotMix
+makeCakeMix (Carrot x) (Oil y)    | x >= 50 && y >= 200 = OilCarrotMix
+makeCakeMix (Oil x) (Oil y)       | x >= 200 && y >= 200 = SpoiledMix
+makeCakeMix _ _                   = NotMix
+
 
 -- Приготовление теста
 cakeDough :: (IngredientsName, Int) -> (IngredientsName, Int) -> (IngredientsName, Int) -> (IngredientsName, Int) -> Dough
