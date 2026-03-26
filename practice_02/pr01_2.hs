@@ -76,9 +76,9 @@ myUnfoldr f ini = helper (f ini) where
 -- myMap - реализуйте функцию map с использованием типа MyList из материалов лекции
 data MyList a = MyEmpty | MyCons a (MyList a) deriving Show
 
--- myMap :: (a -> b) -> MyList a -> MyList b
--- myMap _ MyEmpty         = MyEmpty
--- myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
+myMap :: (a -> b) -> MyList a -> MyList b
+myMap _ MyEmpty         = MyEmpty
+myMap f (MyCons x xs)   = MyCons (f x) (myMap f xs)
 
 -- Расширьте типы для выпекания тортов из материалов лекции:
     -- Добавить возможность испечь не менее трех типов тортов
