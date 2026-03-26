@@ -2,7 +2,7 @@
 -- Практические задание 1. Часть 2 --
 -------------------------------------
 
-module Main where
+module Pr01_2 where
 
 myFST :: (a, b , c) -> a
 myFST (a, _, _) = a
@@ -92,8 +92,6 @@ data FillingMix = NotMix | SpoiledMix | OilChocolateMix | OilVanillaMix | OilCar
 
 data Dough = NotDough | SpoiledDough | CakeDough deriving Show
 
-data CakeDoughType = NotCakeDough  SpoiledCakeDough | ChocolateCakeDough | VanillaCakeDough | CarrotCakeDough deriving Show
-
 data CakeDoughType = NotCakeDough | SpoiledCakeDough | ChocolateCakeDough | VanillaCakeDough | CarrotCakeDough deriving Show
 
 data Cake = NotCake | SpoiledCake | ChocolateCake | VanillaCake | CarrotCake deriving Show
@@ -154,33 +152,26 @@ carrotCake CarrotCakeDough Bake = CarrotCake
 carrotCake _ _ = NotCake
 
 -- Примеры успешного приготовления
-
-mixChoco = makeCakeMix (Oil, 200) (Chocolate, 20)
-doughChoco = cakeDough (Egg, 8) (Flour, 200) (Shugar, 100) (BakingPowder, 2)
+mixChoco = makeCakeMix (Oil 200) (Chocolate 20)
+doughChoco = cakeDough (Egg 8) (Flour 200) (Shugar 100) (BakingPowder 2)
 cakeDoughChoco = chocolateCakeDough doughChoco mixChoco
 cakeChoco = chocolateCake cakeDoughChoco Bake
 
-mixVanilla = makeCakeMix (Oil, 200) (Vanilla, 15)
-doughVanilla = cakeDough (Egg, 8) (Flour, 200) (Shugar, 100) (BakingPowder, 2)
+mixVanilla = makeCakeMix (Oil 200) (Vanilla 15)
+doughVanilla = cakeDough (Egg 8) (Flour 200) (Shugar 100) (BakingPowder 2)
 cakeDoughVanilla = vanillaCakeDough doughVanilla mixVanilla
 cakeVanilla = vanillaCake cakeDoughVanilla Bake
 
-mixCarrot = makeCakeMix (Oil, 200) (Carrot, 50)
-doughCarrot = cakeDough (Egg, 8) (Flour, 200) (Shugar, 100) (BakingPowder, 2)
+mixCarrot = makeCakeMix (Oil 200) (Carrot 50)
+doughCarrot = cakeDough (Egg 8) (Flour 200) (Shugar 100) (BakingPowder 2)
 cakeDoughCarrot = carrotCakeDough doughCarrot mixCarrot
 cakeCarrot = carrotCake cakeDoughCarrot Bake
 
--- Ошибки
-
-mixSpoil1 :: FillingMix
-mixSpoil1 = makeCakeMix (Oil, 50) (Chocolate, 20)  -- недостаточно масла
-
-mixNot1 = makeCakeMix (Egg, 8) (Chocolate, 20)  -- не те ингредиенты
-
-doughSpoil = cakeDough (Oil, 4) (Flour, 200) (Shugar, 100) (BakingPowder, 2)  -- масло вместо яиц
-
+-- Ошибки:
+mixSpoil1 = makeCakeMix (Oil 50) (Chocolate 20)  -- недостаточно масла
+mixNot1 = makeCakeMix (Egg 8) (Chocolate 20)  -- не те ингредиенты
+doughSpoil = cakeDough (Oil 4) (Flour 200) (Shugar 100) (BakingPowder 2)  -- масло вместо яиц
 cakeNotMatch = vanillaCake cakeDoughChoco Bake  -- несоответствие смеси и теста
-
 
 {-
 
