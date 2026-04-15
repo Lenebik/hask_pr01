@@ -16,10 +16,6 @@
 
 module MyTypes.MyTree ( MyTree(Leaf, Node) ) where
 
-import qualified Data.Foldable as FL
-import qualified Data.Functor as FN
-import qualified Control.Applicative as AP
-
 data MyTree a = Leaf a | Node a (MyTree a) (MyTree a) deriving (Show, Eq, Read)
 
 -- применение чистой функции к значению в контейнере
@@ -38,6 +34,14 @@ instance Foldable MyTree where
     length (Leaf _)  = 1
     length (Node _ l r) = length l + length r + 1
 
+-- приминение функции в контейнере к значению в контейнере
+instance Applicative MyTree where
+    pure = Leaf
+
+    (Leaf g) <*> x = fmap g x
+    (Node f leftF rightF) <*> (Leaf x) = Node (f x) (leftF <*> Leaf x) (rightF <*> Leaf x)
+    (Node f leftF rightF) <*> (Node x left right) = Node (f x) (leftF <*> left) (rightF <*> right)
+    
 {-
 Functor:
 
@@ -57,5 +61,16 @@ Foldable:
 
     ghci> length (Node 5 (Leaf 2) (Leaf 3))
     3
+
+Applicative:
+
+    ghci> pure 5
+    5
+
+    ghci> Leaf (+10) <*> Node 2 (Leaf 4) (Leaf 6)
+    Node 12 (Leaf 14) (Leaf 16)
+
+    ghci> (Node (+2) (Leaf (+4)) (Leaf (+6))) <*>  (Node 2 (Leaf 4) (Leaf 6)) 
+    Node 4 (Leaf 8) (Leaf 12)
 
 -}
