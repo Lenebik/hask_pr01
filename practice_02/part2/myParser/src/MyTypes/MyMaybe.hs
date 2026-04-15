@@ -35,6 +35,12 @@ instance Semigroup a => Semigroup (MyMaybe a) where
 instance Semigroup a => Monoid (MyMaybe a) where
     mempty = MyNothing
 
+instance Foldable MyMaybe where 
+    foldr _ z MyNothing = z
+    foldr f z (MyJust x) = f x z
+
+    foldMap _ MyNothing = mempty
+    foldMap f (MyJust x) = f x
 
 {-
 Functor
@@ -69,5 +75,19 @@ Semigroup/Monoid
 
     ghci> MyNothing <> MyNothing
     yNothing
+
+Foldable
+
+    ghci> foldr (*) 2 MyNothing
+    2
+
+    ghci> foldr (*) 2 (MyJust 5)    
+    10
+
+    ghci> foldMap Sum MyNothing
+    Sum {getSum = 0}
+
+    ghci> foldMap Sum (MyJust 10)
+    Sum {getSum = 10}
 
 -}
