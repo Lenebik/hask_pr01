@@ -27,6 +27,15 @@ instance Applicative MyMaybe where
     MyJust f  <*> m = fmap f m
     MyNothing <*> m = MyNothing
 
+instance Semigroup a => Semigroup (MyMaybe a) where
+    MyNothing <> b = b
+    a <> MyNothing = a
+    MyJust a <> MyJust b = MyJust( a <> b)
+
+instance Semigroup a => Monoid (MyMaybe a) where
+    mempty = MyNothing
+
+
 {-
 Functor
 
@@ -46,4 +55,19 @@ Applicative
 
     ghci> MyNothing <*> MyJust 10
     MyNothing
+
+Semigroup/Monoid
+
+    ghci> MyJust (Sum 2) <> MyJust (Sum 3)
+    MyJust (Sum {getSum = 5})
+
+    ghci> MyNothing <> (MyJust (Sum 4))
+    MyJust (Sum {getSum = 4})
+
+    ghci> MyJust (Sum {getSum = 4})
+    MyJust (Sum {getSum = 4})
+
+    ghci> MyNothing <> MyNothing
+    yNothing
+
 -}
