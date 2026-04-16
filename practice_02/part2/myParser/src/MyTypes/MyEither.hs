@@ -11,7 +11,6 @@
 (если класс типов не требуется определять по заданию, то пример вызова не нужен):
 - fold, foldMap, foldr
 - (<>), sconcat, stimes
-- mappend, mconcat
 - fmap, (<$)
 - pure, (<*>), liftA2, (*>), (<*)
 
@@ -40,6 +39,11 @@ instance Applicative (MyEither e) where
     MyLeft e <*> _ = MyLeft e
     _ <*> MyLeft e = MyLeft e
     MyRight f <*> MyRight x = MyRight (f x)
+
+instance Semigroup a => Semigroup (MyEither e a) where
+    MyLeft x <> _ = MyLeft x
+    _ <> MyLeft y = MyLeft y
+    MyRight x <> MyRight y = MyRight (x <> y)
 
 {-
 
@@ -90,12 +94,28 @@ Applicative
     ghci> liftA2 (+) (MyRight 3) (MyRight 7)
     MyRight 10
 
-    liftA2 (+) (MyLeft "error") (MyRight 7)
+    ghci> liftA2 (+) (MyLeft "error") (MyRight 7)
     MyLeft "error"
 
     ghci> pure 1  *> (MyRight 5)
     MyRight 5
 
-    pure 1 <* (MyRight 5)
+    ghci> pure 1 <* (MyRight 5)
     MyRight 1
+
+Semigroup
+    ghci> MyRight (Sum 2) <> MyRight (Sum 3)
+    MyRight (Sum {getSum = 5})
+
+    ghci> MyLeft "err" <> MyRight (Sum 4)
+    MyLeft "err"
+
+    ghci> MyRight (Sum 1) <> MyLeft "err"
+    MyLeft "err"
+
+    ghci> stimes 3 (MyRight "ab")
+    MyRight "ababab"
+
+    ghci> sconcat (MyRight (Sum 1) :| [MyRight (Sum 2), MyRight (Sum 3)])
+    MyRight (Sum {getSum = 6})
 -}
