@@ -30,8 +30,16 @@ instance Functor (MyEither e) where
 instance Foldable (MyEither e) where
     foldr _ z (MyLeft _) = z
     foldr f z (MyRight x) = f x z
+
     foldMap _ (MyLeft _) = mempty
     foldMap f (MyRight x) = f x
+
+instance Applicative (MyEither e) where
+    pure = MyRight
+
+    MyLeft e <*> _ = MyLeft e
+    _ <*> MyLeft e = MyLeft e
+    MyRight f <*> MyRight x = MyRight (f x)
 
 {-
 
@@ -61,4 +69,33 @@ Foldable
 
     ghci> foldMap Sum (MyLeft "error")
     Sum {getSum = 0}
+
+    ghci> fold (MyRight (Sum 3))
+    Sum {getSum = 3}
+
+    ghci> fold (MyLeft "error")
+    ()
+
+Applicative
+
+    ghci> pure 42
+    42
+
+    ghci> MyRight (*7) <*> MyRight 6
+    MyRight 42
+
+    ghci> MyRight (*7) <*> MyLeft "error"
+    MyLeft "Error"
+
+    ghci> liftA2 (+) (MyRight 3) (MyRight 7)
+    MyRight 10
+
+    liftA2 (+) (MyLeft "error") (MyRight 7)
+    MyLeft "error"
+
+    ghci> pure 1  *> (MyRight 5)
+    MyRight 5
+
+    pure 1 <* (MyRight 5)
+    MyRight 1
 -}
