@@ -8,6 +8,9 @@
 
 Добавьте в конец каждого файла многострочный комментарий: 
 для реализованного типа и определенных представителей классов типов напишите пример вызова соответствующих функций и результатов работы из ghci 
+- fold, foldMap, foldr
+- fmap, (<$)
+- pure, (<*>), liftA2, (*>), (<*)
 
 3. Импортируйте модули в Main.hs
 
@@ -51,6 +54,12 @@ Functor:
     ghci> fmap (*2) (Node 1 (Leaf 2) (Leaf 3))
     Node 2 (Leaf 4) (Leaf 6)
 
+    ghci> 100 <$ (Leaf 5)
+    Leaf 100
+
+    ghci> 100 <$ (Node 1 (Leaf 2) (Leaf 3))
+    Node 100 (Leaf 100) (Leaf 100)
+
 Foldable:
 
     Foldable:ghci> foldr (*) 1 (Node 1 (Leaf 2) (Leaf 3))
@@ -62,6 +71,12 @@ Foldable:
     ghci> length (Node 5 (Leaf 2) (Leaf 3))
     3
 
+    ghci> fold (Leaf (Sum 10))
+    Sum {getSum = 10}
+
+    ghci> fold (Node (Sum 1) (Leaf (Sum 2)) (Leaf (Sum 3)))
+    Sum {getSum = 6}
+
 Applicative:
 
     ghci> pure 5
@@ -72,5 +87,17 @@ Applicative:
 
     ghci> (Node (+2) (Leaf (+4)) (Leaf (+6))) <*>  (Node 2 (Leaf 4) (Leaf 6)) 
     Node 4 (Leaf 8) (Leaf 12)
+
+    ghci> liftA2 (+) (Node 1 (Leaf 2) (Leaf 3)) (Node 10 (Leaf 20) (Leaf 30))
+    Node 11 (Leaf 22) (Leaf 33)
+
+    ghci> liftA2 (*) (Leaf 5) (Leaf 3)
+    Leaf 15
+
+    ghci> pure 1 *> (Node 1 (Leaf 2) (Leaf 3))
+    Node 1 (Leaf 2) (Leaf 3)
+
+    ghci> pure 1  <* (Node 1 (Leaf 2) (Leaf 3))
+    Node 1 (Leaf 1) (Leaf 1)
 
 -}
