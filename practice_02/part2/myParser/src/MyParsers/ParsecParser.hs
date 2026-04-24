@@ -1,6 +1,6 @@
 module MyParsers.ParsecParser (
     Parser, runParsecParser, digitP, multiplicationP, digitsP, 
-    finalMultP, finalPlusP, plusOrMultP
+    finalMultP, finalPlusP, plusOrMultParsec
 ) where
 
 import Text.Parsec.String (Parser)
@@ -26,11 +26,17 @@ finalMultP = (*) <$> digitsP <* char '*' <*> digitsP
 finalPlusP :: Parser Int
 finalPlusP = (+) <$> digitsP <* char '+' <*> digitsP
 
-plusOrMultP :: Parser Int
-plusOrMultP = try finalMultP <|> finalPlusP
+plusOrMultParsec :: Parser Int
+plusOrMultParsec = try finalMultP <|> finalPlusP
 
 runParsecParser :: Parser Int -> String -> MyMaybe (String, Int)
 runParsecParser p input =
     case parse p "" input of
         Left _ -> MyNothing
         Right result -> MyJust ("", result)
+
+{-
+Использован Deepseek V3.2
+Напиши минимальную реализованию модуля MyParsers.ParsecParser с использованием библиотеки Parsec
+Со следующим списком экспорта: Parser, runParsecParser, digitP, multiplicationP, digitsP, finalMultP, finalPlusP, plusOrMultParsec
+-}

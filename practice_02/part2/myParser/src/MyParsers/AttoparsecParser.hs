@@ -31,3 +31,9 @@ runParser :: Parser Int -> String -> MyMaybe (String, Int)
 runParser p input = case parseOnly ((,) <$> p <*> takeText) (T.pack input) of
     Left _ -> MyNothing
     Right (result, rest) -> MyJust (T.unpack rest, result)
+
+{-
+Использован Deepseek V3.2
+Напиши минимальную реализованию модуля MyParsers.AttoparsecParser с использованием библиотеки Attoparsec
+Со следующим списком экспорта: Parser, runParser, digitA, multiplicationA, digitsA, finalMultA, finalPlusA, plusOrMultAttoparsec
+-}
