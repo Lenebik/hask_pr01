@@ -26,7 +26,7 @@ main = do
 
 module MyParsers.MyParser (
     Parser, runParser, satisfy, char, lower, digit, multiplication, 
-    lowers, digits, finalMult, finalPlus, plusOrMult
+    lowers, digits, finalMult, finalPlus, plusOrMult, optional
 ) where
 
 import MyTypes.MyMaybe
@@ -65,6 +65,9 @@ instance Alternative (Parser tok) where
         f xs = case u xs of
             MyNothing -> v xs
             x -> x
+
+optional :: Alternative f => f a -> f (Maybe a)
+optional v = Just <$> v <|> pure Nothing
 
 satisfy :: (Char -> Bool) -> Parser Char Char
 satisfy с = Parser f where 

@@ -18,7 +18,7 @@
 
 -}
 
-module MyTypes.MyEither  ( MyEither(MyLeft, MyRight) ) where
+module MyTypes.MyEither  ( MyEither(MyLeft, MyRight), fmap, pure, (<*>), foldr, foldMap, length, (<>) ) where
 
 data MyEither e a = MyLeft e | MyRight a deriving (Show, Eq, Read)
 
@@ -115,6 +115,7 @@ Semigroup
 
     ghci> stimes 3 (MyRight "ab")
     MyRight "ababab"
+
 
     ghci> sconcat (MyRight (Sum 1) :| [MyRight (Sum 2), MyRight (Sum 3)])
     MyRight (Sum {getSum = 6})

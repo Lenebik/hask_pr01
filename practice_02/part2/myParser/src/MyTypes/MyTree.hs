@@ -17,7 +17,7 @@
 -}
 
 
-module MyTypes.MyTree ( MyTree(Leaf, Node) ) where
+module MyTypes.MyTree ( MyTree(Leaf, Node), fmap, pure, (<*>), foldr, foldMap, length ) where
 
 data MyTree a = Leaf a | Node a (MyTree a) (MyTree a) deriving (Show, Eq, Read)
 

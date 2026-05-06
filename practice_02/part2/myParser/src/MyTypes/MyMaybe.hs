@@ -18,7 +18,7 @@
 
 -}
 
-module MyTypes.MyMaybe ( MyMaybe(MyJust, MyNothing) ) where
+module MyTypes.MyMaybe ( MyMaybe(MyJust, MyNothing), fmap, pure, (<*>), foldr, foldMap, (<>), mempty ) where
 
 data MyMaybe a = MyJust a | MyNothing deriving (Show, Eq, Read)
 
