@@ -17,7 +17,6 @@
 
 module Maze where
 
-import qualified Data.ByteString.Char8 as BC
 import qualified Control.Monad.RWS as RWS
 
 data RoomType = Start String | Finish String | Node String deriving (Eq)
@@ -34,20 +33,51 @@ getName (Room (Node name) _) = name
 getNeighbours :: Room -> [String]
 getNeighbours (Room _ x) = x
 
-isFinish:: Room -> Bool
-isFinish (Room (Start _) _) = False
 isFinish (Room (Finish _) _) = True
-isFinish (Room (Node _) _) = False
+isFinish _ = False
 
-findFinish:: Maze -> Maybe Room
+findFinish :: Maze -> Maybe Room
 findFinish []  = Nothing
 findFinish ((Room (Finish name) neighbours) : rest) = Just(Room (Finish name) neighbours)
 findFinish ((Room (Start name) neighbours) : rest)  = findFinish rest 
 findFinish ((Room (Node name) neighbours) : rest)  = findFinish rest 
 
-findStart:: Maze -> Maybe Room
+findStart :: Maze -> Maybe Room
 findStart []  = Nothing
 findStart ((Room (Start name) neighbours) : rest) = Just(Room (Start name) neighbours)
 findStart ((Room (Finish name) neighbours) : rest)  = findStart rest 
 findStart ((Room (Node name) neighbours) : rest)  = findStart rest 
 
+findRoom :: Maze -> String -> Maybe Room -- поиск комнаты по имени
+findRoom [] _ = Nothing
+findRoom (room : rest) seek 
+    | getName room == seek = Just room
+    | otherwise = findRoom rest seek
+
+isInPath :: [String] -> String -> Bool -- является ли комната частью маршрута
+isInPath [] _ = False
+isInPath (n : rest) seek | n == seek = True
+                         | otherwise = isInPath rest seek
+
+getUnvisited :: [String] -> [String] -> [String]
+getUnvisited [] _ = []
+getUnvisited (n : ns) path | isInPath path n = getUnvisited ns path
+                           | otherwise = (n : getUnvisited ns path)
+
+solveMaze :: RWS.RWS Maze [String] [String] (Maybe [String])
+solveMaze =
+    RWS.ask >>= \maze ->
+    case (findStart maze, findFinish maze) of
+        (Nothing, _) ->
+            RWS.tell ["Ошибка: Стартовая комната не найдена"] >>
+            return Nothing
+        (_, Nothing) ->
+            RWS.tell ["Ошибка: Финишная комната не найдена"] >>
+            return Nothing
+        (Just startRoom, Just finishRoom) ->
+            let startName = getName startRoom
+                finishName = getName finishRoom
+            in RWS.put [startName] >>
+               RWS.tell ["Старт в комнате: " ++ startName] >>
+               RWS.tell ["Финиш в комнате: " ++ finishName] >>
+               searchPath maze finishName
