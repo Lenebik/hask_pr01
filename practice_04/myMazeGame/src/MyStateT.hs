@@ -1,6 +1,6 @@
 {-# LANGUAGE InstanceSigs #-}
 
-module MyStateT (MyStateT(..), myState) where
+module MyStateT (MyStateT(..), myState, lift) where
 
 import Control.Monad.Trans.Class (MonadTrans(..))
 

@@ -21,7 +21,7 @@
 
 module Main (main) where
 
-import Lib
+import Maze (playMaze)
 
 main :: IO ()
-main = someFunc
+main = playMaze "mazes/uni.maze"
