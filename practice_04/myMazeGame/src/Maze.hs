@@ -74,6 +74,18 @@ runGame maze startRoom game = do
     let (a, log) = result
     return (a, log, fin)
 
+-- Развертывание типов в runGame
+
+-- 1) снимаем ReaderT: runReaderT :: ReaderT r m a -> r -> m a
+-- runReaderT game maze :: WriterT [String] (MyStateT String IO) a (передали maze, получили внутреннюю монаду)
+-- 2) снимаем WriterT: runWriterT :: WriterT w m a -> m (a, w)
+-- runWriterT (runReaderT game maze) :: MyStateT String IO (a, [String])
+-- writer возвращает свой лог в виде пары (результат, лог) (a, log)
+-- 3) снимаем MyStateT: runMyStateT :: MyStateT s m a -> s -> m (a, s)
+-- runMyStateT (runWriterT (runReaderT game maze)) startRoom :: IO ((a, [String]), String)
+-- state возвращает финальное состояние парой (результат игры, финальное состояние) (result, fin), где результат - пара от writer
+-- получаем кортеж из трех значений (a, log, fin)
+
 gameProc :: Game ()
 gameProc = do
     maze    <- ask
