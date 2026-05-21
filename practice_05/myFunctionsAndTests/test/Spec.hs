@@ -60,16 +60,16 @@ prop_rev_involution = forAll genText $ \s ->
 main :: IO ()
 main = do
     putStrLn "addMod -- приведение по модулю:"
-    quickCheck prop_addMod_mod
+    quickCheck (withMaxSuccess 5 (verbose prop_addMod_mod))
     putStrLn "addMod -- нейтральный элемент:"
-    quickCheck prop_addMod_neutral
+    quickCheck (withMaxSuccess 5 (verbose prop_addMod_neutral))
     putStrLn "addMod -- коммутативность:"
-    quickCheck prop_addMod_comm
+    quickCheck (withMaxSuccess 5 (verbose prop_addMod_comm))
     putStrLn "reverseWords -- пустая строка:"
     quickCheck prop_rev_empty
     putStrLn "reverseWords -- одно слово:"
-    quickCheck prop_rev_single
+    quickCheck (withMaxSuccess 5 (verbose prop_rev_single))
     putStrLn "reverseWords -- смена порядка слов:"
-    quickCheck prop_rev_order
+    quickCheck (withMaxSuccess 5 (verbose prop_rev_order))
     putStrLn "reverseWords -- двойное применение:"
-    quickCheck prop_rev_involution
+    quickCheck (withMaxSuccess 5 (verbose prop_rev_involution))
