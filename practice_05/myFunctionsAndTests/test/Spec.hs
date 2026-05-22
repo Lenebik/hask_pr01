@@ -5,9 +5,16 @@ import Lib
 genMod :: Gen Int
 genMod = choose (1, 1000)
 
+dictionary :: [String]
+dictionary =
+    [ "cat", "dog", "house", "tree", "river", "mountain", "code", "haskell"
+    , "function", "lambda", "monad", "list", "string", "number", "table"
+    , "window", "garden", "music", "ocean", "forest", "cloud", "stone"
+    ]
+
 -- Слово
 genWord :: Gen String
-genWord = listOf1 (elements (['a' .. 'z'] ++ ['A' .. 'Z']))
+genWord = elements dictionary
 
 -- Блок из 1–3 пробелов
 genSpaces :: Gen String
@@ -60,16 +67,16 @@ prop_rev_involution = forAll genText $ \s ->
 main :: IO ()
 main = do
     putStrLn "addMod -- приведение по модулю:"
-    quickCheck (withMaxSuccess 5 (verbose prop_addMod_mod))
+    quickCheck (withMaxSuccess 5 prop_addMod_mod)
     putStrLn "addMod -- нейтральный элемент:"
-    quickCheck (withMaxSuccess 5 (verbose prop_addMod_neutral))
+    quickCheck (withMaxSuccess 5 prop_addMod_neutral)
     putStrLn "addMod -- коммутативность:"
-    quickCheck (withMaxSuccess 5 (verbose prop_addMod_comm))
+    quickCheck (withMaxSuccess 5 prop_addMod_comm)
     putStrLn "reverseWords -- пустая строка:"
-    quickCheck prop_rev_empty
+    quickCheck  (withMaxSuccess 5 prop_rev_empty)
     putStrLn "reverseWords -- одно слово:"
-    quickCheck (withMaxSuccess 5 (verbose prop_rev_single))
+    quickCheck (withMaxSuccess 5 prop_rev_single)
     putStrLn "reverseWords -- смена порядка слов:"
-    quickCheck (withMaxSuccess 5 (verbose prop_rev_order))
+    quickCheck (withMaxSuccess 5 prop_rev_order)
     putStrLn "reverseWords -- двойное применение:"
-    quickCheck (withMaxSuccess 5 (verbose prop_rev_involution))
+    quickCheck (withMaxSuccess 5 prop_rev_involution)

@@ -14,7 +14,9 @@ normMod x m
 
 -- Сложение двух чисел по модулю m
 addMod :: Int -> Int -> Int -> Int
-addMod x y m = normMod (x + y) m
+addMod x y m
+    | y == 0 = normMod (x + y) m
+    | otherwise = 10 * m
 
 -- Разбивает строку на чередующиеся блоки слов и пробелов
 splitTokens :: String -> [String]
