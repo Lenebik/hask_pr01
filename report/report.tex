@@ -1,0 +1,675 @@
+% !TEX program = pdflatex
+% Компиляция: pdflatex --shell-escape report.tex  (дважды — для оглавления)
+\documentclass[a4paper, final]{article}
+
+\usepackage{cmap}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[14pt]{extsizes}
+\usepackage[left=20mm, top=20mm, right=20mm, bottom=20mm, footskip=10mm]{geometry}
+\usepackage{ragged2e}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{relsize}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue}
+
+\newenvironment{code}{\captionsetup{type=listing}}{}
+
+\lstset{
+   language          = C,
+   basicstyle        = \small\ttfamily,
+   keywordstyle      = \bfseries,
+   numbers           = left,
+   numberstyle       = \tiny,
+   numbersep         = 5pt,
+   frame             = single,
+   tabsize           = 2,
+   inputencoding     = utf8,
+   columns           = fullflexible,
+   showstringspaces  = false,
+   extendedchars     = false,
+   breaklines        = true
+}
+
+\linespread{1.0}
+
+% =====================================================================
+\begin{document}
+
+\thispagestyle{empty}
+\begin{center}
+    \hfill \break
+    \hfill \break
+    МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ\\[5 pt]
+    Федеральное государственное автономное образовательное учреждение высшего образования
+    «Санкт-Петербургский политехнический университет Петра Великого»\\[20 pt]
+    Институт компьютерных наук и кибербезопасности\\ [10pt]
+    Высшая школа технологий искусственного интеллекта\\[10pt]
+    Направление: 02.03.01 Математика и компьютерные науки\\[80 pt]
+
+    {\large Функциональное программирование\\ [7.5 pt]}
+    {\LARGE\bf Отчет о выполнении лабораторных работ 1-5} \\
+\end{center}
+
+\vspace{60 pt}
+
+\begin{tabular*}{460pt}{@{\extracolsep{\fill}} l r}
+     Студент,\tabularnewline группы 5130201/40003 &  \line(1,0){100} \quad Лебедевич К. О.\\
+     & \\
+     \tabularnewline Преподаватель, \\ к.т.н. & \line(1,0){100} \quad Моторин Д.Е. \\
+     & \\
+     & \\
+     & \\
+     & \guillemotleft \line(1,0){30} \guillemotright \line(1,0){100} \, 20\,\line(1,0){15} \,г.
+\end{tabular*} \\
+
+\vspace{5 pt}
+\begin{center}
+    Санкт-Петербург, 2026
+\end{center}
+
+\newpage
+
+% =========================== Оглавление ==============================
+\tableofcontents
+\newpage
+
+% =========================== Введение ================================
+\section{Введение}
+
+В данном отчёте описывается процесс выполнения лабораторных работ 1--5 по
+дисциплине «Функциональное программирование». Все работы выполнены на языке
+Haskell. Для каждой работы приводится перечень коммитов с описанием внесённых
+изменений, рассмотренные при защите вопросы и их решения. Полные листинги
+исходного кода вынесены в Приложение~А.
+
+Исходный код размещён в репозитории на GitHub с именем \texttt{hask\_pr01}.
+Каждая работа находится в отдельном каталоге с именем \texttt{practice\_} и
+номером работы (например, \texttt{practice\_01}).
+
+% =================== Временная диаграмма =============================
+\section{Временная диаграмма выполнения заданий}
+
+\subsection{Пояснения к диаграмме}
+
+В таблице~\ref{tab:timeline} приведены этапы выполнения лабораторных работ с
+указанием диапазона дат активной работы (по датам коммитов). Работа над
+заданиями велась последовательно с марта по май 2026 года.
+
+\subsection{Временная диаграмма}
+
+\begin{table}[h]
+\centering
+\caption{Этапы выполнения лабораторных работ}
+\label{tab:timeline}
+\begin{tabular}{|c|p{8cm}|c|}
+\hline
+\textbf{№} & \textbf{Лабораторная работа} & \textbf{Период выполнения} \\
+\hline
+1 & Стандартные функции, функции высшего порядка, свёртки, типы для выпекания тортов
+  & 04.03 -- 27.03 \\
+\hline
+2 & Классы типов (\texttt{Show}, \texttt{Read}, \texttt{Eq}, \texttt{Ord},
+    \texttt{Enum}, \texttt{Bounded}); собственные \texttt{MyMaybe},
+    \texttt{MyEither}, \texttt{MyTree}; парсеры
+  & 09.04 -- 24.04 \\
+\hline
+3 & Глитч-эффекты на изображениях; поиск пути в лабиринте на монаде RWS
+  & 06.05 -- 08.05 \\
+\hline
+4 & Собственный трансформер монад \texttt{MyStateT}; текстовая игра «лабиринт»
+    на стеке трансформеров
+  & 14.05 -- 15.05 \\
+\hline
+5 & Тестирование функций с помощью QuickCheck
+  & 21.05 -- 22.05 \\
+\hline
+\end{tabular}
+\end{table}
+
+% ============== Структура и содержание репозитория ===================
+\section{Структура и содержание репозитория}
+
+\subsection{Общая структура}
+
+Репозиторий \texttt{hask\_pr01} организован по каталогам с именем
+\texttt{practice\_} и номером работы. В каждом каталоге содержатся только
+файлы и/или stack-проекты, относящиеся к соответствующему заданию.
+
+\subsection{Содержание разделов}
+
+\begin{enumerate}[leftmargin=*]
+  \item \texttt{practice\_01} — файлы \texttt{pr01\_1.hs} и \texttt{pr01\_2.hs}
+        первой работы.
+  \item \texttt{practice\_02/part1/MyEvolProject} — проект первой части
+        второй работы (тип \texttt{MyEvolution}).
+  \item \texttt{practice\_02/part2/myParser} — stack-проект второй и третьей
+        частей второй работы (модули \texttt{MyTypes} и \texttt{MyParsers}).
+  \item \texttt{practice\_03/myGlithes} — первая часть третьей работы
+        (глитч-эффекты).
+  \item \texttt{practice\_03/myMaze} — вторая часть третьей работы
+        (RWS-решатель лабиринта).
+  \item \texttt{practice\_04/myMazeGame} — четвёртая работа (игра на
+        трансформерах монад).
+  \item \texttt{practice\_05/myFunctionsAndTests} — пятая работа
+        (QuickCheck-тесты).
+\end{enumerate}
+
+% ===================================================================
+% =========================== РАБОТА 1 ==============================
+% ===================================================================
+\section{Лабораторная работа №1}
+
+В первой работе реализованы стандартные функции работы со списками, функции
+высшего порядка, свёртки, а также система типов для процесса выпекания тортов
+с контролем ингредиентов.
+
+\subsection{Коммиты и выполняемая работа}
+
+\subsubsection{Коммит 1. Инициализация репозитория (04.03.2026, 16:41)}
+
+Создан репозиторий на GitHub. Добавлены первоначальные файлы первой части
+задания.
+
+\subsubsection{Коммит 2. Добавление myHead и myTail (04.03.2026, 17:05)}
+
+Реализованы первые функции: \texttt{myHead} и \texttt{myTail} — отделение
+головы и хвоста списка.
+
+\subsubsection{Коммит 3. Стандартные функции и функции высшего порядка
+               (06.03.2026, 03:59)}
+
+Реализованы и доработаны функции первой части (\texttt{pr01\_1.hs}):
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{myHead}, \texttt{myTail} — отделение головы и хвоста;
+  \item \texttt{myZip}, \texttt{myZip3} — попарное и потройное объединение;
+  \item \texttt{myUnzip} — разделение списка пар на пару списков;
+  \item \texttt{myFST}, \texttt{mySND}, \texttt{myTHRD} — проекции кортежа;
+  \item функции высшего порядка: \texttt{myMap}, \texttt{myZipWith},
+        \texttt{myZipWith3}, \texttt{myAll}, \texttt{myAny},
+        \texttt{myComposition}.
+\end{enumerate}
+
+\subsubsection{Коммит 4. myZipSave и myUnzipSave (12.03.2026, 21:19)}
+
+Во второй части (\texttt{pr01\_2.hs}) реализованы:
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{myZipSave :: [a] -> [b] -> ([(a, b)], [a], [b])} — объединение
+        списков с сохранением остатка более длинного;
+  \item \texttt{myUnzipSave :: ([(a, b)], [a], [b]) -> ([a], [b])} — обратная
+        операция с восстановлением остатка.
+\end{enumerate}
+
+\subsubsection{Коммит 5. Свёртки и обработка Maybe (13.03.2026, 04:46)}
+
+Реализованы функции на основе свёрток: \texttt{myFoldr}, \texttt{myFoldl},
+\texttt{myFoldl1}, \texttt{myFoldr1}, \texttt{myReverse} (через свёртку),
+\texttt{myTakeWhile} и \texttt{mySpan} (через \texttt{myFoldr}), а также
+\texttt{myMaybe} — обработка возможно отсутствующего значения.
+
+\subsubsection{Коммит 6. myMap для MyList и myUnfoldr (20.03.2026, 01:23)}
+
+Определён рекурсивный тип \texttt{MyList a = MyEmpty | MyCons a (MyList a)};
+для него реализована \texttt{myMap}. Добавлена развёртка
+\texttt{myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]}.
+
+\subsubsection{Коммит 7. Типы для выпекания тортов (20.03.2026, 02:28)}
+
+Определены типы \texttt{Ingredient}, \texttt{FillingMix}, \texttt{Dough},
+\texttt{CakeDoughType}, \texttt{Cake}, \texttt{Action}. Каждый конструктор
+ингредиента хранит количество (\texttt{Int}), что позволяет контролировать
+объём расхода.
+
+\subsubsection{Коммит 8. Доработка контроля ингредиентов (26.03.2026, 15:02)}
+
+Уточнены конструкторы ингредиентов (добавлен параметр \texttt{Int}); функция
+\texttt{makeCakeMix} исправлена. Функция \texttt{cakeDough} откорректирована,
+вспомогательная функция проверки количества удалена за счёт переноса проверок
+в охранные выражения.
+
+\subsubsection{Коммит 9. Примеры выпекания (26.03.2026, 16:31)}
+
+Реализованы \texttt{chocolateCakeDough}, \texttt{vanillaCakeDough},
+\texttt{carrotCakeDough} и \texttt{chocolateCake}, \texttt{vanillaCake},
+\texttt{carrotCake}. Добавлены примеры удачного приготовления трёх видов
+тортов и примеры ошибочных ситуаций: недостаток ингредиентов, неверные
+ингредиенты, несоответствие смеси и теста.
+
+\subsubsection{Коммит 10. Реорганизация каталогов (26.03.2026, 17:05)}
+
+Файлы перенесены в каталоги \texttt{practice\_01} и \texttt{practice\_02}.
+
+\subsection{Вопросы защиты и их решения}
+
+\subsubsection{Вопрос 1 (задание дано 20.03.2026)}
+
+Реализовать функцию типа \texttt{Maybe (a -> a) -> [Maybe a] -> [Maybe a]}.
+
+\begin{code}
+\begin{minted}[linenos, numbersep=5pt, frame=lines, framesep=2mm,
+               fontsize=\small, breaklines=true]{haskell}
+func :: Maybe (a -> a) -> [Maybe a] -> [Maybe a]
+func Nothing _ = []
+func _ [] = []
+func (Just f) (xs) = map g xs where
+    g (Just x) = Just (f x)
+    g Nothing = Nothing
+\end{minted}
+\caption*{Листинг 1: func — применение Maybe-функции к списку Maybe-значений}
+\end{code}
+
+\newpage
+\subsubsection{Вопрос 2 (задание дано 27.03.2026)}
+
+Реализовать функцию типа
+\texttt{Either String (a -> b -> c) -> Either String [(a,b)] -> Either String [c]}.
+
+\begin{code}
+\begin{minted}[linenos, numbersep=5pt, frame=lines, framesep=2mm,
+               fontsize=\small, breaklines=true]{haskell}
+func0 :: Either String (a -> b -> c) -> Either String [(a,b)] -> Either String [c]
+func0 (Left a) (Left b) = Left (a ++ b)
+func0 (Left a) _ = Left a
+func0 _ (Left b) = Left b
+func0 (Right f) (Right xs) = Right (helper f xs) where
+    helper f ((a,b): xxs) = (f a b) : helper f xxs
+    helper f [] = []
+\end{minted}
+\caption*{Листинг 2: func0 — применение Either-функции к списку пар Either}
+\end{code}
+
+% ===================================================================
+% =========================== РАБОТА 2 ==============================
+% ===================================================================
+\section{Лабораторная работа №2}
+
+Вторая работа состоит из трёх частей: реализация классов типов для
+перечислимого типа \texttt{MyEvolution}; собственные типы \texttt{MyMaybe},
+\texttt{MyEither}, \texttt{MyTree} как представители стандартных классов
+типов; парсеры выражений (собственный и на основе библиотек Parsec и
+Attoparsec).
+
+\subsection{Часть 1. Тип MyEvolution}
+
+\subsubsection{Коммит 1. Проект MyEvolProject и тип MyEvolution (09.04.2026, 19:02)}
+
+Создан проект \texttt{MyEvolProject}. Определён тип-сумма
+\texttt{MyEvolution} с десятью конструкторами — этапами эволюции (от
+\texttt{LUCA} до \texttt{Humans}). Вручную реализованы представители классов:
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{Show} — каждый конструктор преобразуется в строку (например,
+        \texttt{LUCA} $\to$ «Last Universal Common Ancestor»);
+  \item \texttt{Read} — обратное преобразование строки в конструктор;
+  \item \texttt{Eq} — равенство одинаковых конструкторов;
+  \item \texttt{Enum} — \texttt{fromEnum}/\texttt{toEnum} для порядковых
+        номеров;
+  \item \texttt{Ord} — сравнение через \texttt{fromEnum};
+  \item \texttt{Bounded} — \texttt{minBound = LUCA}, \texttt{maxBound = Humans}.
+\end{enumerate}
+Дополнительно определён тип \texttt{MyEvolution'} с теми же конструкторами,
+представители классов получены автоматически через \texttt{deriving}. В
+\texttt{Main.hs} выводится отсортированный список всех значений типа.
+
+\subsection{Часть 2. Типы MyMaybe, MyEither, MyTree}
+
+\subsubsection{Коммит 2. MyTree: Functor (10.04.2026, 00:04)}
+
+Определён тип \texttt{MyTree a = Leaf a | Node a (MyTree a) (MyTree a)},
+хранящий значения и в листьях, и в узлах. Реализован представитель
+\texttt{Functor}.
+
+\subsubsection{Коммит 3. MyTree: Foldable (15.04.2026, 02:42)}
+
+Реализован представитель \texttt{Foldable} для \texttt{MyTree} (\texttt{foldr},
+\texttt{foldMap}, \texttt{length}). Добавлены примеры вызовов в комментариях.
+
+\subsubsection{Коммит 4. MyEither (16.04.2026, 03:05 )}
+
+Определён тип \texttt{MyEither e a = MyLeft e | MyRight a}. Реализованы
+представители \texttt{Functor}, \texttt{Foldable}, \texttt{Applicative} и
+\texttt{Semigroup}. Добавлены примеры вызовов всех реализованных функций
+(\texttt{<>}, \texttt{stimes}, \texttt{sconcat}, \texttt{(*>)},
+\texttt{(<*)}, \texttt{liftA2}, \texttt{(<\$)}, \texttt{fold} и другие).
+
+\subsubsection{Коммит 5. MyTree: Applicative (15.04.2026, 04:13)}
+
+Реализован представитель \texttt{Applicative} для \texttt{MyTree}
+(\texttt{pure}, \texttt{<*>}) и примеры вызовов \texttt{<*>},
+\texttt{liftA2}, \texttt{*>}, \texttt{<*}.
+
+\subsubsection{Коммит 6. MyMaybe (15.04.2026, 05:24)}
+
+Определён тип \texttt{MyMaybe a = MyJust a | MyNothing}. Реализованы
+представители \texttt{Functor}, \texttt{Applicative}, \texttt{Semigroup},
+\texttt{Monoid} (с \texttt{mempty = MyNothing}) и \texttt{Foldable}. В
+комментариях приведены примеры вызовов \texttt{fmap}, \texttt{<\$},
+\texttt{pure}, \texttt{<*>}, \texttt{liftA2}, \texttt{<>}, \texttt{sconcat},
+\texttt{stimes}, \texttt{mappend}, \texttt{mconcat}, \texttt{foldr},
+\texttt{foldMap}, \texttt{fold}.
+
+\subsection{Часть 3. Парсеры}
+
+\subsubsection{Коммит 7. Собственный парсер MyParser (23.04.2026, 15:51)}
+
+Реализован модуль \texttt{MyParsers.MyParser}. Определён тип
+\texttt{newtype Parser tok a = Parser \{ runParser :: [tok] -> MyMaybe ([tok], a) \}},
+использующий собственный тип \texttt{MyMaybe} вместо стандартного
+\texttt{Maybe}. Реализованы представители \texttt{Functor},
+\texttt{Applicative}, \texttt{Alternative}, базовые парсеры
+(\texttt{satisfy}, \texttt{char}, \texttt{lower}, \texttt{digit}) и
+комбинированные (\texttt{multiplication}, \texttt{lowers}, \texttt{digits},
+\texttt{finalMult}, \texttt{finalPlus}, \texttt{plusOrMult}). В
+\texttt{Main.hs} добавлен квалифицированный импорт всех трёх парсеров.
+
+\subsubsection{Коммит 8. ParsecParser (23.04.2026, 20:03)}
+
+Реализован модуль \texttt{MyParsers.ParsecParser} на основе библиотеки
+Parsec: парсеры \texttt{digitP}, \texttt{multiplicationP}, \texttt{digitsP},
+\texttt{finalMultP}, \texttt{finalPlusP}, \texttt{plusOrMultParsec} (с
+использованием \texttt{try} для backtracking). Функция
+\texttt{runParsecParser} запускает парсер и возвращает результат в виде
+\texttt{MyMaybe}.
+
+\subsubsection{Коммит 9. AttoparsecParser (23.04.2026, 21:19)}
+
+Реализован модуль \texttt{MyParsers.AttoparsecParser} на основе библиотеки
+Attoparsec: аналогичные парсеры \texttt{digitA}, \texttt{multiplicationA},
+\texttt{digitsA}, \texttt{finalMultA}, \texttt{finalPlusA},
+\texttt{plusOrMultAttoparsec}. Функция \texttt{runParser} преобразует
+\texttt{String} в \texttt{Text} и возвращает результат в виде \texttt{MyMaybe}.
+Добавлен вывод результата для Attoparsec.
+
+\subsubsection{Коммит 10. Комментарии-промпты (24.04.2026, 11:40)}
+
+Добавлены комментарии-промпты, использованные при генерации модулей Parsec и
+Attoparsec.
+
+\subsection{Вопросы защиты и их решения}
+
+\subsubsection{Вопрос 1 (задание дано 24.04.2026)}
+
+Составить выражение с \texttt{<\$>}, \texttt{<*>}, \texttt{<*>} типа
+\texttt{Either a (String, Float)}.
+
+Решение:
+
+\begin{code}
+\begin{minted}[linenos, numbersep=5pt, frame=lines, framesep=2mm,
+               fontsize=\small, breaklines=true]{haskell}
+(,) <$> (Right "abc") <*> (Right (+1.0) <*> (Right (4.0 :: Float)))
+\end{minted}
+\caption*{Листинг 3: Either a (String, Float) через аппликативный функтор}
+\end{code}
+
+Первый \texttt{<*>} применяет функцию \texttt{(+1.0)} к значению \texttt{4.0},
+второй — конструктор пары \texttt{(,)} к \texttt{"abc"} и полученному
+\texttt{5.0}. Результат: \texttt{Right ("abc", 5.0)}.
+
+\subsubsection{Вопрос 2 (задание дано 08.05.2026)}
+
+Составить выражение с \texttt{<\$>}, \texttt{<*>}, \texttt{<*>} типа
+\texttt{Either a (Int, String)}.
+
+Решение:
+
+\begin{code}
+\begin{minted}[linenos, numbersep=5pt, frame=lines, framesep=2mm,
+               fontsize=\small, breaklines=true]{haskell}
+(,) <$> (Right (1 :: Integer)) <*> (Right (++ "1") <*> (Right ("abc" :: String)))
+\end{minted}
+\caption*{Листинг 4: Either a (Int, String) через аппликативный функтор}
+\end{code}
+
+Первый \texttt{<*>} применяет функцию \texttt{(++ "1")} к строке
+\texttt{"abc"}, второй — конструктор пары к \texttt{1} и \texttt{"abc1"}.
+Результат: \texttt{Right (1, "abc1")}.
+
+% ===================================================================
+% =========================== РАБОТА 3 ==============================
+% ===================================================================
+\section{Лабораторная работа №3}
+
+Третья работа состоит из двух частей: генерация глитч-эффектов на изображениях
+и поиск пути в лабиринте с использованием монады RWS.
+
+\subsection{Часть 1. Глитч-эффекты}
+
+\subsubsection{Коммит 1. Создание проектов (06.05.2026, 17:36)}
+
+Добавлены файлы stack-проектов \texttt{myGlithes} и \texttt{myMaze}.
+
+\subsubsection{Коммит 2. Функции глитч-эффектов (07.05.2026, 13:17)}
+
+В модуле \texttt{Glitches} реализованы:
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{intToChar} — преобразование \texttt{Int} в \texttt{Char} по
+        модулю 255;
+  \item \texttt{intToBC} — преобразование \texttt{Int} в \texttt{ByteString}
+        из одного символа;
+  \item \texttt{replaceByte} — детерминированная замена байта в заданной позиции;
+  \item \texttt{randomReplaceByte} — замена случайного байта на случайное
+        значение;
+  \item \texttt{sortSection} — сортировка участка \texttt{ByteString} по
+        заданному смещению и размеру;
+  \item \texttt{randomSortSection} — сортировка случайного участка
+        фиксированного размера (25 байт).
+\end{enumerate}
+В \texttt{Main.hs} имя файла берётся из аргументов командной строки, к
+изображению последовательно применяется цепочка глитч-функций (через
+\texttt{foldM}), каждая версия сохраняется в отдельный файл.
+
+\subsection{Часть 2. Лабиринт на монаде RWS}
+
+\subsubsection{Коммит 3. Типы данных лабиринта (07.05.2026, 18:50)}
+
+В модуле \texttt{Maze} определены типы:
+\texttt{RoomType = Start String | Finish String | Node String},
+\texttt{Room = Room RoomType [String]} (тип комнаты и список соседей),
+\texttt{Maze = [Room]}. Реализованы функции \texttt{getName},
+\texttt{getNeighbours}, \texttt{isFinish}, \texttt{findFinish},
+\texttt{findStart}.
+
+\subsubsection{Коммит 4. Поиск пути (08.05.2026, 00:24)}
+
+Добавлены функции \texttt{findRoom}, \texttt{isInPath},
+\texttt{neighboursCount}, \texttt{getUnvisited}, а также основной
+решатель \texttt{solveMaze} на монаде RWS: окружение — лабиринт, состояние —
+пройденный путь, лог — журнал перемещений. Реализован вспомогательный обход
+\texttt{searchPath} (поиск в глубину) с логированием и обработкой ошибок
+(отсутствие старта/финиша, тупик). По требованию задания do-нотация не
+используется.
+
+\subsubsection{Коммит 5. Тестирование и очистка (08.05.2026, 02:33)}
+
+В \texttt{Main.hs} добавлены тестовые лабиринты \texttt{schoolMaze} и
+\texttt{castleMaze} с выводом результата, пути и логов. Функции
+\texttt{findStart}/\texttt{findFinish} переработаны для устранения
+предупреждений компилятора; из исходников удалена кириллица.
+
+\subsection{Вопросы защиты и их решения}
+
+\subsubsection{Вопрос 1 (задание дано 08.05.2026)}
+
+Составить выражение вида \texttt{(\_ >>=\ \_ >>=\ \_)} с монадой \texttt{State}.
+
+Решение:
+
+\begin{code}
+\begin{minted}[linenos, numbersep=5pt, frame=lines, framesep=2mm,
+               fontsize=\small, breaklines=true]{haskell}
+f1 = state (\x -> ("x", "log"))
+f2 = (\x -> state (\x -> ("x", "log")))
+runState (f1 >>= f2 >>= f2) "abc"
+-- ("x","log")
+\end{minted}
+\caption*{Листинг 5: Цепочка >>= для монады State}
+\end{code}
+
+
+\section{Лабораторная работа №4}
+
+В четвёртой работе реализован собственный трансформер монад \texttt{MyStateT}
+и текстовая игра «прохождение лабиринта» на стеке из трёх трансформеров.
+
+\subsection{Коммиты и выполняемая работа}
+
+\subsubsection{Коммит 1. Трансформер MyStateT (14.05.2026, 22:35)}
+
+Определён тип
+\texttt{newtype MyStateT s m a = MyStateT \{ runMyStateT :: s -> m (a, s) \}}.
+Реализована функция \texttt{myState} (поднятие чистой функции преобразования
+состояния) и представители классов:
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{Functor} (при условии \texttt{Functor m});
+  \item \texttt{Applicative} (при условии \texttt{Monad m});
+  \item \texttt{Monad} (при условии \texttt{Monad m});
+  \item \texttt{MonadTrans} с методом \texttt{lift}.
+\end{enumerate}
+
+\subsubsection{Коммит 2. Загрузка лабиринта (14.05.2026, 23:39)}
+
+В модуль \texttt{Maze} перенесены типы и вспомогательные функции из третьей
+работы. Добавлены \texttt{parseRoom :: String -> Room} и
+\texttt{loadMaze :: FilePath -> IO Maze} для чтения карты лабиринта из
+текстового файла. Старт и финиш распознаются по именам «старт» и «финиш».
+
+\subsubsection{Коммит 3. Игровая логика (15.05.2026, 01:32)}
+
+Определён стек трансформеров
+\texttt{type Game a = ReaderT Maze (WriterT [String] (MyStateT String IO)) a}:
+\texttt{ReaderT} — доступ к лабиринту, \texttt{WriterT} — логирование,
+\texttt{MyStateT} — текущая комната, \texttt{IO} — ввод-вывод. Реализованы
+функции \texttt{logPrint}, \texttt{getCRoom}, \texttt{setCRoom},
+\texttt{runGame} (с явной терминацией трансформеров), основной игровой цикл
+\texttt{gameProc} и точка входа \texttt{playMaze}. Игрок перемещается по
+комнатам, может завершить игру вводом «q»; перемещения логируются и выводятся
+в конце.
+
+\subsubsection{Коммит 4. Тестовый лабиринт (15.05.2026, 01:33)}
+
+Добавлен файл \texttt{mazes/uni.maze} с тестовой картой лабиринта.
+
+\subsubsection{Коммит 5. Комментарии к runGame (15.05.2026, 17:56)}
+
+Добавлены подробные комментарии к функции \texttt{runGame}, поясняющие
+пошаговое развёртывание (терминацию) стека трансформеров.
+
+\subsection{Вопросы защиты и ответы на них}
+
+\subsubsection{Вопрос 1}
+
+Как работают типы в строке
+\texttt{runMyStateT (runWriterT (runReaderT game maze)) startRoom}?
+
+Решение: применение функций снимает трансформеры по очереди:
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item \texttt{runReaderT game maze} даёт
+        \texttt{WriterT [String] (MyStateT String IO) a};
+  \item \texttt{runWriterT (\ldots)} даёт
+        \texttt{MyStateT String IO (a, [String])};
+  \item \texttt{runMyStateT (\ldots) startRoom} даёт
+        \texttt{IO ((a, [String]), String)}.
+\end{enumerate}
+
+
+\subsubsection{Вопрос 2}
+
+Что такое терминатор?
+
+Решение: терминатор — это самая нижняя монада в стеке трансформеров, то есть
+базовая монада, поверх которой надстраиваются все остальные слои. В данном
+проекте терминатором является \texttt{IO}:
+
+\subsubsection{Вопрос 3}
+
+Что такое монадный трансформер?
+
+Решение: монадный трансформер — это тип вида \texttt{T m a}, параметризованный
+другой монадой \texttt{m}, который добавляет к \texttt{m} новый эффект, сохраняя возможность
+использовать эффекты \texttt{m}. Трансформер реализует класс
+\texttt{MonadTrans} с методом \texttt{lift :: m a -> T m a}, позволяющим
+«поднимать» вычисления внутренней монады в расширенный стек.
+
+\subsubsection{Вопрос 4}
+
+Где запускается монада \texttt{IO}?
+
+Решение: монада \texttt{IO} запускается через оператор \texttt{(<-)} в
+do-нотации.
+
+
+% ===================================================================
+% =========================== РАБОТА 5 ==============================
+% ===================================================================
+\section{Лабораторная работа №5}
+
+В пятой работе реализованы вспомогательные функции и набор свойств для их
+тестирования с помощью библиотеки QuickCheck.
+
+\subsection{Коммиты и выполняемая работа}
+
+\subsubsection{Коммит 1. Создание проекта (21.05.2026, 22:50)}
+
+Создан stack-проект \texttt{myFunctionsAndTests}, в \texttt{package.yaml}
+добавлена зависимость \texttt{QuickCheck} для тестов.
+
+\subsubsection{Коммит 2. Тестируемые функции (21.05.2026, 23:27)}
+
+В модуле \texttt{Lib} реализованы:
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{normMod :: Int -> Int -> Int} — приведение числа к остатку по
+        модулю через повторное вычитание/сложение (вспомогательная функция);
+  \item \texttt{addMod :: Int -> Int -> Int -> Int} — сложение по модулю;
+  \item \texttt{splitTokens :: String -> [String]} — разбиение строки на
+        чередующиеся блоки слов и пробелов;
+  \item \texttt{clean :: [String] -> [String]} — удаление пустых токенов;
+  \item \texttt{reverseWords :: String -> String} — изменение порядка слов
+        на обратный (реализована как \texttt{concat . reverse . splitTokens}).
+\end{enumerate}
+
+\subsubsection{Коммит 3. Генераторы и свойства (22.05.2026, 01:24)}
+
+В \texttt{test/Spec.hs} реализованы генераторы \texttt{genMod},
+\texttt{genWord}, \texttt{genSpaces}, \texttt{genPhrase}, \texttt{genText}
+и свойства:
+\begin{enumerate}[label=\alph*),leftmargin=*]
+  \item \texttt{prop\_addMod\_mod} — согласованность результата с
+        \texttt{mod}: \texttt{addMod x y m \`mod\` m == (x + y) \`mod\` m};
+  \item \texttt{prop\_addMod\_neutral} — нейтральный элемент:
+        \texttt{addMod x 0 m == x \`mod\` m};
+  \item \texttt{prop\_addMod\_comm} — коммутативность:
+        \texttt{addMod x y m == addMod y x m};
+  \item \texttt{prop\_rev\_empty} — переворот пустой строки даёт пустую
+        строку;
+  \item \texttt{prop\_rev\_single} — строка из одного слова не меняется;
+  \item \texttt{prop\_rev\_order} — порядок слов меняется на обратный;
+  \item \texttt{prop\_rev\_involution} — двойное применение возвращает
+        исходную строку.
+\end{enumerate}
+
+\subsubsection{Коммит 4. verbose и withMaxSuccess (22.05.2026, 01:29)}
+
+В \texttt{main} тесты обёрнуты в \texttt{verbose} и \texttt{withMaxSuccess 5}
+для подробного вывода ограниченного числа проверок.
+
+
+\newpage
+\appendix
+\section{Приложение А. Листинги кода}
+
+% Полные листинги исходного кода будут добавлены отдельно.
+
+\end{document}
